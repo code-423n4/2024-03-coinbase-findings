@@ -1,0 +1,8 @@
+{
+  "contest": 350,
+  "handle": "m454ki",
+  "risk": "3",
+  "title": "Lack of Ownership Verification in Withdraw Function of MagicSpend Contract",
+  "issueId": 3,
+  "issueUrl": "https://github.com/code-423n4/2024-03-coinbase-findings/issues/3"
+}
