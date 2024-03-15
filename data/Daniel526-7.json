@@ -1,0 +1,8 @@
+{
+  "contest": 350,
+  "handle": "Daniel526",
+  "risk": "2",
+  "title": "Inconsistent Domain Separator Calculation in ERC1271 Contract",
+  "issueId": 7,
+  "issueUrl": "https://github.com/code-423n4/2024-03-coinbase-findings/issues/7"
+}
