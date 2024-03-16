@@ -1,0 +1,8 @@
+{
+  "contest": 350,
+  "handle": "hassan-truscova",
+  "risk": "2",
+  "title": "Cross-Chain Signature Replay Attack",
+  "issueId": 9,
+  "issueUrl": "https://github.com/code-423n4/2024-03-coinbase-findings/issues/9"
+}
