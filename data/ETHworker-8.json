@@ -1,0 +1,8 @@
+{
+  "contest": 350,
+  "handle": "ETHworker",
+  "risk": "3",
+  "title": "Owner Removal Logic: The removeOwnerAtIndex function does not prevent the removal of the last owner, which could lead to a contract without any owners and thus no one with the ability to manage it.",
+  "issueId": 8,
+  "issueUrl": "https://github.com/code-423n4/2024-03-coinbase-findings/issues/8"
+}
