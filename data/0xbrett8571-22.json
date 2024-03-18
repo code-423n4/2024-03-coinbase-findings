@@ -1,0 +1,8 @@
+{
+  "contest": 350,
+  "handle": "0xbrett8571",
+  "risk": "2",
+  "title": "`removeOwnerAtIndex` function lacks check, risking contract inaccessibility if all owners removed.",
+  "issueId": 22,
+  "issueUrl": "https://github.com/code-423n4/2024-03-coinbase-findings/issues/22"
+}
