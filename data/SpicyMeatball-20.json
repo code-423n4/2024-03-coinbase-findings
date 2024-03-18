@@ -1,0 +1,8 @@
+{
+  "contest": 350,
+  "handle": "SpicyMeatball",
+  "risk": "3",
+  "title": "Incorrect count of attributes in postOp function",
+  "issueId": 20,
+  "issueUrl": "https://github.com/code-423n4/2024-03-coinbase-findings/issues/20"
+}
