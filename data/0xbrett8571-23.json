@@ -1,0 +1,8 @@
+{
+  "contest": 350,
+  "handle": "0xbrett8571",
+  "risk": "2",
+  "title": "AddOwner functions lack validation, risking invalid owner data and transaction failures.",
+  "issueId": 23,
+  "issueUrl": "https://github.com/code-423n4/2024-03-coinbase-findings/issues/23"
+}
