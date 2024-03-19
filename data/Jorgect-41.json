@@ -1,0 +1,8 @@
+{
+  "contest": 350,
+  "handle": "Jorgect",
+  "risk": "2",
+  "title": "The expire of the withdraw signature is not been validated.",
+  "issueId": 41,
+  "issueUrl": "https://github.com/code-423n4/2024-03-coinbase-findings/issues/41"
+}
