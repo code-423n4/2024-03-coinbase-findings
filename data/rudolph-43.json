@@ -1,0 +1,8 @@
+{
+  "contest": 350,
+  "handle": "rudolph",
+  "risk": "2",
+  "title": "Lack of Storage Gap in Upgradeable Contract",
+  "issueId": 43,
+  "issueUrl": "https://github.com/code-423n4/2024-03-coinbase-findings/issues/43"
+}
