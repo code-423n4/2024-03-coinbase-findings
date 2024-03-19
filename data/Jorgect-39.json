@@ -1,0 +1,8 @@
+{
+  "contest": 350,
+  "handle": "Jorgect",
+  "risk": "3",
+  "title": "Users can front run the signature of the paymaster operation leading to some problems.",
+  "issueId": 39,
+  "issueUrl": "https://github.com/code-423n4/2024-03-coinbase-findings/issues/39"
+}
