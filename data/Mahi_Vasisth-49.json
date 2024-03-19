@@ -1,0 +1,8 @@
+{
+  "contest": 350,
+  "handle": "Mahi_Vasisth",
+  "risk": "2",
+  "title": "CoinBaseSmartWallet.sol` is intended to be upgradable but inherits from contracts that contain storage and no gaps",
+  "issueId": 49,
+  "issueUrl": "https://github.com/code-423n4/2024-03-coinbase-findings/issues/49"
+}
