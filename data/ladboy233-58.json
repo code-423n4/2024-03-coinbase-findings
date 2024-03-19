@@ -1,0 +1,8 @@
+{
+  "contest": 350,
+  "handle": "ladboy233",
+  "risk": "2",
+  "title": "Does not send missed fund to entry point when validateUserOp is triggered",
+  "issueId": 58,
+  "issueUrl": "https://github.com/code-423n4/2024-03-coinbase-findings/issues/58"
+}
