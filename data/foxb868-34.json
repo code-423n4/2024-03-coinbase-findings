@@ -1,0 +1,8 @@
+{
+  "contest": 350,
+  "handle": "foxb868",
+  "risk": "2",
+  "title": "Unchecked low-level call returns may cause silent failures, impacting Smart Wallet functionality.",
+  "issueId": 34,
+  "issueUrl": "https://github.com/code-423n4/2024-03-coinbase-findings/issues/34"
+}
