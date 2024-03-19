@@ -1,0 +1,8 @@
+{
+  "contest": 350,
+  "handle": "ladboy233",
+  "risk": "3",
+  "title": "User can drain the paymaster (MagicSend) deposit quickly because lack of validation from field mUserOp.verificationGasLimit",
+  "issueId": 59,
+  "issueUrl": "https://github.com/code-423n4/2024-03-coinbase-findings/issues/59"
+}
