@@ -1,4 +1,4 @@
-
+# L-0: MultiOwnable.sol is missing two functions as specified in the documentation,  making the `canSkipChainIdValidation()` checks to not be complete.
 # L-2: `_validateRequest()` doesn't check against the TX expiration.
 # L-3:  Make use of `non-reentrant` guards on functions sending eth or other tokens.
 # L-4: Operations that allow replayability on multiple chains can be replayed multiple times on a specific chain if not using the MagicSpender as its paymaster. 
