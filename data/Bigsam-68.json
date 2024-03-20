@@ -1,0 +1,8 @@
+{
+  "contest": 350,
+  "handle": "Bigsam",
+  "risk": "3",
+  "title": "The Same address List of Owners with the same nonce will deploy different coinbase wallet",
+  "issueId": 68,
+  "issueUrl": "https://github.com/code-423n4/2024-03-coinbase-findings/issues/68"
+}
