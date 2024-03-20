@@ -1,0 +1,8 @@
+{
+  "contest": 350,
+  "handle": "shealtielanz",
+  "risk": "2",
+  "title": "In `validateUserOp()` if the signature is valid there is no deadline check whenever the Users do not make use of the `MagicSpender.sol` allowing their TX vulnerable to MEV Attacks.",
+  "issueId": 69,
+  "issueUrl": "https://github.com/code-423n4/2024-03-coinbase-findings/issues/69"
+}
