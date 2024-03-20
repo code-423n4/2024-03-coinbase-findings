@@ -1,0 +1,8 @@
+{
+  "contest": 350,
+  "handle": "lsaudit",
+  "risk": "2",
+  "title": "EIP-4337 violation in CoinbaseSmartWalletFactory",
+  "issueId": 92,
+  "issueUrl": "https://github.com/code-423n4/2024-03-coinbase-findings/issues/92"
+}
