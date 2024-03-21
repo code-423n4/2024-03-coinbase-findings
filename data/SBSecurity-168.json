@@ -1,0 +1,8 @@
+{
+  "contest": 350,
+  "handle": "SBSecurity",
+  "risk": "2",
+  "title": "Anyone with valid `WithdrawRequest` can steal excess ETH from `MagicSpend`",
+  "issueId": 168,
+  "issueUrl": "https://github.com/code-423n4/2024-03-coinbase-findings/issues/168"
+}
