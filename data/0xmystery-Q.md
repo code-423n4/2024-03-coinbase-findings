@@ -93,6 +93,22 @@ Devoid of `Dencun upgrade`, contracts relying on the new opcodes will likely fai
 
 As of todate, Optimism, Arbitrum, and Base have implemented the Dencun upgrade. Consider implementing conditional logic in contracts or hold off deploying to L2 that hasn't had the upgrade updated.
 
+## [L-07] Lack of EIP-712 compliance when using `keccak256()` directly on an array or a struct variable
+Directly using the actual variable instead of encoding the array values goes against the EIP-712 specification according to the link below:
+
+https://github.com/ethereum/EIPs/blob/master/EIPS/eip-712.md#definition-of-encodedata
+
+**Note**: OpenSea's [Seaport's example with offerHashes and considerationHashes](https://github.com/ProjectOpenSea/seaport/blob/a62c2f8f484784735025d7b03ccb37865bc39e5a/reference/lib/ReferenceGettersAndDerivers.sol#L130-L131) can be used as a reference to understand how array or structs should be encoded.
+
+Here's an instance entailed where the bytes array, `owners` should have been separately encoded first:
+
+https://github.com/code-423n4/2024-03-coinbase/blob/main/src/SmartWallet/CoinbaseSmartWalletFactory.sol#L81-L83
+
+```solidity
+    function _getSalt(bytes[] calldata owners, uint256 nonce) internal pure returns (bytes32 salt) {
+        salt = keccak256(abi.encode(owners, nonce));
+    }
+```
 ## [NC-01] Typographical error in constant variable name
 The constant variable `MUTLI_OWNABLE_STORAGE_LOCATION` in the MultiOwnable contract contains a typographical error, where "MULTI" is misspelled as "MUTLI". While being non-critical and not impacting the functionality, security, or performance of the contract, the typo could potentially cause mild confusion or readability issues for developers/users reviewing or interacting with the code. Correcting the spelling would enhance code clarity and maintain naming consistency without affecting the contract's execution or behavior.
 
