@@ -8,8 +8,6 @@ Core features of the Smart Wallet include multi-ownership capabilities, enabling
 
 From a user's perspective, interaction with the Smart Wallet begins with its creation via the CoinbaseSmartWalletFactory, which allows for the deployment of individual wallets with unique addresses. Users can then add multiple owners or authentication methods, tailoring access control to their specific needs. For executing transactions, users benefit from the wallet's ability to handle batched transactions, enabling multiple operations in a single transaction for increased efficiency and reduced costs.
 
-Furthermore, the Smart Wallet is designed with upgradeability in mind, ensuring that it can adapt to future developments and improvements in the blockchain ecosystem without necessitating the creation of a new wallet address. This feature provides users with peace of mind, knowing that their wallet will remain at the cutting edge of blockchain technology.
-
 For withdrawals and managing transaction fees, the MagicSpend contract acts as a Paymaster, offering users a flexible mechanism to manage gas fees and withdraw funds securely through signed requests. This system not only simplifies the management of blockchain transaction costs but also introduces a layer of flexibility in how users can interact with their funds.
 
 
@@ -185,6 +183,11 @@ Overall, I consider the quality of the **Smart wallet** codebase to be of high c
 
 
 
+## Comprehensive Flow Diagram of the PoolTogether Protocol
+
+<br/>
+
+[![Screenshot-from-2024-03-21-23-41-28.png](https://i.postimg.cc/jSy6QPTz/Screenshot-from-2024-03-21-23-41-28.png)](https://postimg.cc/CRLfwZz1)
 
 
 
@@ -205,11 +208,6 @@ Overall, I consider the quality of the **Smart wallet** codebase to be of high c
 
 
 
-## Comprehensive Flow Diagram of the PoolTogether Protocol
-
-<br/>
-
-[![Screenshot-from-2024-03-21-23-41-28.png](https://i.postimg.cc/jSy6QPTz/Screenshot-from-2024-03-21-23-41-28.png)](https://postimg.cc/CRLfwZz1)
 
 ## Approach Taken while auditing the codebase
 When auditing the Smart Wallet protocol, I initiated the process with a comprehensive review of the project's documentation, focusing on the protocol's objectives, design patterns, and security mechanisms. This foundational understanding was crucial for appreciating the context and complexities of the protocol, particularly its integration with ERC-4337 standards and the innovative use of multi-ownership and WebAuthn technologies for enhanced security.
