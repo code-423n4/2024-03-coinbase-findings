@@ -1,3 +1,16 @@
+
+| Number | Issue Detail | Severity |
+|-----:|----|-----|
+| `L-01` | MultiOwnable.sol is missing two functions as specified in the documentation,  making the `canSkipChainIdValidation()` checks to not be complete.. | Low |
+| `L-02` |Make use of `non-reentrant` guards on functions sending eth or other tokens. . | Low |
+| `L-03` | Griefing as an attacker can front-run the call to create the SCW Account leading to bad user UX.. | Low |
+| `L-04` | Solady's `isValidSignatureNow()` is prone to signature malleability. | Low |
+| `L-05` | Anyone can call `upgradeToAndCall()` | Low |
+| `L-06` | The SCW account doesn't check the user ops nonce. | Low |
+| `Info-01` | solady `safeTransfer()` doesn't check contracts existence. | Info |
+
+
+
 # L-1: MultiOwnable.sol is missing two functions as specified in the documentation,  making the `canSkipChainIdValidation()` checks to not be complete.
 In the documentation, there are 6 functions that allow for cross-chain replayability.
 https://github.com/code-423n4/2024-03-coinbase/blob/main/src/SmartWallet/README.md
@@ -83,9 +96,7 @@ This allows for validation of invalid signature as attackers can manipulated the
 ## Mitigation
 Use Openzeppelin library to avoid this
 
-# L-5: Newly created accounts should depend on the user's signature.
-
-# L-6: Anyone can call `upgradeToAndCall()`
+# L-5: Anyone can call `upgradeToAndCall()`
 The `upgradeToAndCall()` in CoinBaseSmartContract.sol can be called by anyone, allowing malicious actors to be able to perform malicious activities like upgrades and grieving the users:
 
 ```solidity
@@ -103,9 +114,9 @@ The `upgradeToAndCall()` in CoinBaseSmartContract.sol can be called by anyone, a
 }
 ```
 ## Mitigation
-Add a modifier to ensure only the owners can call this function.
+Override the function and Add a modifier to ensure only the owners can call this function.
 
-# L-7: The SCW account check the user ops nonce.
+# L-6: The SCW account doesn't check the user ops nonce.
 As per vitalik Buterin Article [here](https://medium.com/infinitism/erc-4337-account-abstraction-without-ethereum-protocol-changes-d75c9d94dc4a) :
 > validateUserOp, which takes a UserOperation as input. This function is supposed to verify the signature and nonce on the UserOperation, pay the fee and increment the nonce if verification succeeds, and throw an exception if verification fails.
 
