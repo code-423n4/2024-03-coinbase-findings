@@ -81,6 +81,18 @@ https://github.com/code-423n4/2024-03-coinbase/blob/main/src/SmartWallet/Coinbas
 
 -        revert InvalidOwnerBytesLength(ownerBytes);
 ```
+## [L-05] Adapting to L2's decentralized sequencing: Navigating New Frontiers in Transaction Fairness
+As Layer 2 like Base considers moving towards a more decentralized sequencer model, the platform faces the challenge of maintaining its current mitigation of frontrunning risks inherent in a "first come, first served" system. The transition could reintroduce vulnerabilities to transaction ordering manipulation, demanding innovative solutions to uphold transaction fairness. Strategies such as commit-reveal schemes, submarine sends, Fair Sequencing Services (FSS), decentralized MEV mitigation techniques, and the incorporation of time-locks and randomness could play pivotal roles. These measures aim to preserve the integrity of transaction sequencing, ensuring that the L2's evolution towards decentralization enhances its ecosystem without compromising the security and fairness that are crucial for user trust and platform reliability.
+
+## [L-06] Possioble deployment and functional failure of Contracts on L2s due to Dencun Opcodes
+With the protocol intending to operate on various L2 chains, it may encounter deployment and operational challenges if utilizing any of the new opcodes that enhance Ethereum's functionality, such as those related to shard blob transactions (EIP-4844) and others as described in the link below:
+
+https://www.coinlive.com/news/ethereum-dencun-hard-fork-content-introduction
+
+Devoid of `Dencun upgrade`, contracts relying on the new opcodes will likely fail because the Ethereum Virtual Machine (EVM) on these L2s would not recognize or know how to execute the new instructions, leading to reverts or other unexpected behaviors.  
+
+As of todate, Optimism, Arbitrum, and Base have implemented the Dencun upgrade. Consider implementing conditional logic in contracts or hold off deploying to L2 that hasn't had the upgrade updated.
+
 ## [NC-01] Typographical error in constant variable name
 The constant variable `MUTLI_OWNABLE_STORAGE_LOCATION` in the MultiOwnable contract contains a typographical error, where "MULTI" is misspelled as "MUTLI". While being non-critical and not impacting the functionality, security, or performance of the contract, the typo could potentially cause mild confusion or readability issues for developers/users reviewing or interacting with the code. Correcting the spelling would enhance code clarity and maintain naming consistency without affecting the contract's execution or behavior.
 
@@ -91,7 +103,7 @@ https://github.com/code-423n4/2024-03-coinbase/blob/main/src/SmartWallet/MultiOw
 +    bytes32 private constant MULTI_OWNABLE_STORAGE_LOCATION =
         0x97e2c6aad4ce5d562ebfaa00db6b9e0fb66ea5d8162ed5b243f51a2e03086f00;
 ```
-## [NC-02] Enhanced asset support in MagicSpend
+## [NC-02] Comment mismatch on future enhanced asset support in MagicSpend
 MagicSpend.sol, initially documented to support only ETH withdrawals, inherently possesses a broader capability to manage multiple asset types, including ERC-20 tokens, through its versatile `_withdraw()` function. 
 
 https://github.com/code-423n4/2024-03-coinbase/blob/main/src/MagicSpend/MagicSpend.sol#L326-L340
@@ -154,4 +166,58 @@ https://github.com/code-423n4/2024-03-coinbase/blob/main/src/SmartWallet/MultiOw
                 revert InvalidEthereumAddressOwner(owners[i]);
             }
 ```
-   
+## [NC-04] Private function with embedded modifier reduces contract size
+Consider having the logic of a modifier embedded through a private function to reduce contract size if need be. A `private` visibility that is more efficient on function calls than the `internal` visibility is adopted because the modifier will only be making this call inside the contract.
+
+For instance, the modifier below may be refactored as follows:
+
+https://github.com/code-423n4/2024-03-coinbase/blob/main/src/MagicSpend/MagicSpend.sol#L92-L96
+
+```diff
++    function _onlyEntryPoint() private view {
++        if (msg.sender != entryPoint()) revert Unauthorized();
++    }
+
+     modifier onlyEntryPoint() {
+-        if (msg.sender != entryPoint()) revert Unauthorized();
++        _onlyEntryPoint();
+     _;
+     }
+```
+## [NC-05] Activate the Optimizer
+Before deploying your contract, activate the optimizer when compiling using “solc --optimize --bin sourceFile.sol”. By default, the optimizer will optimize the contract assuming it is called 200 times across its lifetime. If you want the initial contract deployment to be cheaper and the later function executions to be more expensive, set it to “ --optimize-runs=1”. Conversely, if you expect many transactions and do not care for higher deployment cost and output size, set “--optimize-runs” to a high number.
+
+```
+module.exports = {
+solidity: {
+version: "0.8.23",
+settings: {
+optimizer: {
+  enabled: true,
+  runs: 1000,
+},
+},
+},
+};
+```
+Please visit the following site for further information:
+
+https://docs.soliditylang.org/en/v0.5.4/using-the-compiler.html#using-the-commandline-compiler
+
+Here's one example of instance on opcode comparison that delineates the gas saving mechanism:
+
+```
+for !=0 before optimization
+PUSH1 0x00
+DUP2
+EQ
+ISZERO
+PUSH1 [cont offset]
+JUMPI
+
+after optimization
+DUP1
+PUSH1 [revert offset]
+JUMPI
+```
+Disclaimer: There have been several bugs with security implications related to optimizations. For this reason, Solidity compiler optimizations are disabled by default, and it is unclear how many contracts in the wild actually use them. Therefore, it is unclear how well they are being tested and exercised. High-severity security issues due to optimization bugs have occurred in the past . A high-severity bug in the emscripten -generated solc-js compiler used by Truffle and Remix persisted until late 2018. The fix for this bug was not reported in the Solidity CHANGELOG. Another high-severity optimization bug resulting in incorrect bit shift results was patched in Solidity 0.5.6. Please measure the gas savings from optimizations, and carefully weigh them against the possibility of an optimization-related bug. Also, monitor the development and adoption of Solidity compiler optimizations to assess their maturity.   
