@@ -1,0 +1,8 @@
+{
+  "contest": 350,
+  "handle": "Giorgio",
+  "risk": "2",
+  "title": "validatePaymasterUserOp() call should not increase _withdrawableETH balance if signature is invalid  ",
+  "issueId": 194,
+  "issueUrl": "https://github.com/code-423n4/2024-03-coinbase-findings/issues/194"
+}
