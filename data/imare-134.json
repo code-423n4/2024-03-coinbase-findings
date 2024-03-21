@@ -1,0 +1,8 @@
+{
+  "contest": 350,
+  "handle": "imare",
+  "risk": "2",
+  "title": "wallet is missing a consensus mechanism for the wallet owners",
+  "issueId": 134,
+  "issueUrl": "https://github.com/code-423n4/2024-03-coinbase-findings/issues/134"
+}
