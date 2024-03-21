@@ -27,11 +27,12 @@ Implement the missing functions and add them to the `canSkipChainIdValidation()`
 
 # L-2:  Make use of `non-reentrant` guards on functions sending eth or other tokens. 
 In MagicSpend.sol & CoinBaseSmartContract.sol There are different functions that send ETh and other tokens out of the contract, however this function can be prone to re-entrancy it is best to add non-reentrant modifier to the following functions.
-- withdrawGasExcess()
-- withdraw()
-- ownerWithdraw()
-- executeBatch()
-- execute()
+- withdrawGasExcess() -> https://github.com/code-423n4/2024-03-coinbase/blob/e0573369b865d47fed778de00a7b6df65ab1744e/src/MagicSpend/MagicSpend.sol#L169
+- withdraw() -> https://github.com/code-423n4/2024-03-coinbase/blob/e0573369b865d47fed778de00a7b6df65ab1744e/src/MagicSpend/MagicSpend.sol#L181
+- ownerWithdraw() -> https://github.com/code-423n4/2024-03-coinbase/blob/e0573369b865d47fed778de00a7b6df65ab1744e/src/MagicSpend/MagicSpend.sol#L203
+- executeBatch() -> https://github.com/code-423n4/2024-03-coinbase/blob/e0573369b865d47fed778de00a7b6df65ab1744e/src/SmartWallet/CoinbaseSmartWallet.sol#L205
+- execute() -> https://github.com/code-423n4/2024-03-coinbase/blob/e0573369b865d47fed778de00a7b6df65ab1744e/src/SmartWallet/CoinbaseSmartWallet.sol#L196
+- executeWithoutChainIdValidation() -> https://github.com/code-423n4/2024-03-coinbase/blob/e0573369b865d47fed778de00a7b6df65ab1744e/src/SmartWallet/CoinbaseSmartWallet.sol#L180C14-L180C46
 
 # Mitigation
 Add a non-reentrant modifier.
@@ -62,7 +63,8 @@ https://github.com/code-423n4/2024-03-coinbase/blob/e0573369b865d47fed778de00a7b
 ```
 
 # Mitigation 
-Use a unique key by the caller during the creation of the contract or a hash to avoid this.
+- Allow only the Entry Point to call the function.
+- Use a unique key by the caller during the creation of the contract or a hash to avoid this.
 # L-4: Solady's `isValidSignatureNow()` is prone to signature malleability.
 The contracts use `isValidSignatureNow()` by Solady to check for signature validity allowing for signature malleability as the function doesn't check `s` against the other side of the curve.
 https://github.com/code-423n4/2024-03-coinbase/blob/e0573369b865d47fed778de00a7b6df65ab1744e/src/SmartWallet/CoinbaseSmartWallet.sol#L313
@@ -76,12 +78,13 @@ https://github.com/code-423n4/2024-03-coinbase/blob/e0573369b865d47fed778de00a7b
         );
 
 ```
-This allows for validation of invalid signature as users can manipulated the signature to grieve the signer.
+This allows for validation of invalid signature as attackers can manipulated the signature to grieve the signer.
 
 ## Mitigation
 Use Openzeppelin library to avoid this
 
 # L-5: Newly created accounts should depend on the user's signature.
+
 # L-6: Anyone can call `upgradeToAndCall()`
 The `upgradeToAndCall()` in CoinBaseSmartContract.sol can be called by anyone, allowing malicious actors to be able to perform malicious activities like upgrades and grieving the users:
 
@@ -99,4 +102,53 @@ The `upgradeToAndCall()` in CoinBaseSmartContract.sol can be called by anyone, a
 ..SNIP..
 }
 ```
-# Info-1: solmate `safeTransfer()` doesn't check contracts existence.
+## Mitigation
+Add a modifier to ensure only the owners can call this function.
+
+# L-7: The SCW account check the user ops nonce.
+As per vitalik Buterin Article [here](https://medium.com/infinitism/erc-4337-account-abstraction-without-ethereum-protocol-changes-d75c9d94dc4a) :
+> validateUserOp, which takes a UserOperation as input. This function is supposed to verify the signature and nonce on the UserOperation, pay the fee and increment the nonce if verification succeeds, and throw an exception if verification fails.
+
+The `validateUserOp()` doesn't check against the user nonce.
+https://github.com/code-423n4/2024-03-coinbase/blob/e0573369b865d47fed778de00a7b6df65ab1744e/src/SmartWallet/CoinbaseSmartWallet.sol#L137C1-L168C6
+```solidity
+    function validateUserOp(UserOperation calldata userOp, bytes32 userOpHash, uint256 missingAccountFunds)
+        public
+        payable
+        virtual
+        onlyEntryPoint
+        payPrefund(missingAccountFunds)
+        returns (uint256 validationData)
+    {
+        uint256 key = userOp.nonce >> 64;
+
+        if (userOp.callData.length >= 4 && bytes4(userOp.callData[0:4]) == 0xbf6ba1fc) {
+            userOpHash = getUserOpHashWithoutChainId(userOp);
+            if (key != REPLAYABLE_NONCE_KEY) {
+                revert InvalidNonceKey(key);
+            }
+        } else {
+            if (key == REPLAYABLE_NONCE_KEY) {
+                revert InvalidNonceKey(key);
+            }
+        }
+
+.
+        if (_validateSignature(userOpHash, userOp.signature)) {
+            return 0;
+        }
+
+        return 1;
+    }
+```
+
+# Mitigation 
+Validate the user nonce.
+
+# Info-1: solady `safeTransfer()` doesn't check contracts existence.
+Solady `safeTransfer()` doesn't check against the existence of the contract in an address and can be harmful to the contract when integrating with other contracts
+https://github.com/code-423n4/2024-03-coinbase/blob/e0573369b865d47fed778de00a7b6df65ab1744e/src/MagicSpend/MagicSpend.sol#L338
+```solidity
+         SafeTransferLib.safeTransfer(asset, to, amount); //@audit 
+        }
+```
