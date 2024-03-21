@@ -1,0 +1,8 @@
+{
+  "contest": 350,
+  "handle": "bareli",
+  "risk": "2",
+  "title": "_withdraw  can  fail on zero amount transfers if amount is set to zero",
+  "issueId": 169,
+  "issueUrl": "https://github.com/code-423n4/2024-03-coinbase-findings/issues/169"
+}
