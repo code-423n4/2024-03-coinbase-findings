@@ -191,144 +191,6 @@ Overall, I consider the quality of the **Smart wallet** codebase to be of high c
 
 
 
-## Mathematical Overview of the PoolTogether Protocol
-
-The PoolTogether protocol incorporates various mathematical functions and principles to manage its prize-linked savings system. Below, we delve into the core mathematical aspects of the protocol, focusing primarily on the `PrizeVault.sol` contract, which plays a crucial role in managing user deposits, yield generation, and prize distribution.
-
-### Yield Generation and Distribution
-
-#### 1. **Yield Buffer Management**
-The `PrizeVault` contract utilizes a yield buffer to ensure that small rounding errors in yield generation don't affect the user's ability to withdraw their full deposit. The yield buffer (`yieldBuffer`) is a predefined quantity of assets reserved to cover these errors.
-
-
-
-#### 2. **Asset and Share Conversion**
-The protocol uses functions to convert between deposited assets and vault shares. These conversions account for the total debt (totalAssets - yieldBuffer) and the underlying yield vault's exchange rate to ensure users can always withdraw their deposits minus any incurred yield vault losses.
-
-- **Conversion to Shares**:
-  
-  ```solidity
-  function convertToShares(uint256 _assets) public view returns (uint256) {
-        uint256 totalDebt_ = totalDebt();
-        uint256 _totalAssets = totalAssets();
-        if (_totalAssets >= totalDebt_) {
-            return _assets;
-        } else {
-            return _assets.mulDiv(totalDebt_, _totalAssets, Math.Rounding.Down);
-        }
-    }
-  ```
-
-- **Conversion to Assets**:
-  
-  ```solidity
-  function convertToAssets(uint256 _shares) public view returns (uint256) {
-        uint256 totalDebt_ = totalDebt();
-        uint256 _totalAssets = totalAssets();
-        if (_totalAssets >= totalDebt_) {
-            return _shares;
-        } else {
-            return _shares.mulDiv(_totalAssets, totalDebt_, Math.Rounding.Down);
-        }
-    }
-
-  ```
-
-#### 3. **Max Deposit and Withdraw Calculation**
-The maximum deposit and withdrawal amounts are dynamically calculated to ensure the vault's total share supply doesn't exceed the `uint96` limit set by the `TwabController`, and to manage the total assets under yield generation without depleting the yield buffer.
-
-- **Max Deposit Calculation**:
-  
-  ```solidity
-  function maxDeposit(address) public view returns (uint256) {
-        uint256 _totalSupply = totalSupply();
-        uint256 totalDebt_ = _totalDebt(_totalSupply);
-        if (totalAssets() < totalDebt_) return 0;
-
-        uint256 twabSupplyLimit_ = _twabSupplyLimit(_totalSupply);
-        uint256 _maxDeposit;
-        uint256 _latentBalance = _asset.balanceOf(address(this));
-        uint256 _maxYieldVaultDeposit = yieldVault.maxDeposit(address(this));
-        if (_latentBalance >= _maxYieldVaultDeposit) {
-            return 0;
-        } else {
-            unchecked {
-                _maxDeposit = _maxYieldVaultDeposit - _latentBalance;
-            }
-            return twabSupplyLimit_ < _maxDeposit ? twabSupplyLimit_ : _maxDeposit;
-        }
-    }
-  ```
-
-- **Max Withdraw Calculation**:
-  
-  ```solidity
-  function maxWithdraw(address _owner) public view returns (uint256) {
-        uint256 _maxWithdraw = _maxYieldVaultWithdraw() + _asset.balanceOf(address(this));
-
-        uint256 _ownerAssets = convertToAssets(balanceOf(_owner));
-        return _ownerAssets < _maxWithdraw ? _ownerAssets : _maxWithdraw;
-    }
-  ```
-
-#### 4. **Yield Fee and Liquidation**
-A portion of the generated yield is reserved as a fee, which can be claimed by a designated yield fee recipient. The liquidation process involves converting the generated yield into the prize token, taking into account the yield fee percentage.
-
-- **Yield Fee Calculation**:
-  
-  ```solidity
-  function liquidatableBalanceOf(address _tokenOut) public view returns (uint256) {
-        uint256 _totalSupply = totalSupply();
-        uint256 _maxAmountOut;
-        if (_tokenOut == address(this)) {
-            // Liquidation of vault shares is capped to the TWAB supply limit.
-            _maxAmountOut = _twabSupplyLimit(_totalSupply);
-        } else if (_tokenOut == address(_asset)) {
-            // Liquidation of yield assets is capped at the max yield vault withdraw plus any latent balance.
-            _maxAmountOut = _maxYieldVaultWithdraw() + _asset.balanceOf(address(this));
-        } else {
-            return 0;
-        }
-  ```
-
-- **Fee Accrual and Claiming**:
-  
-  ```solidity
-  function claimYieldFeeShares(uint256 _shares) external onlyYieldFeeRecipient {
-        if (_shares == 0) revert MintZeroShares();
-
-        uint256 _yieldFeeBalance = yieldFeeBalance;
-        if (_shares > _yieldFeeBalance) revert SharesExceedsYieldFeeBalance(_shares, _yieldFeeBalance);
-
-        yieldFeeBalance -= _yieldFeeBalance;
-
-        _mint(msg.sender, _shares);
-
-        emit ClaimYieldFeeShares(msg.sender, _shares);
-    }
-  ```
-
-These mathematical functions ensure that the PoolTogether protocol can manage user deposits, generate yield, and distribute prizes in a secure and efficient manner. The interactions between these functions enable the protocol to adjust to changing conditions, such as yield rates and asset values, ensuring the sustainability of the prize-linked savings system.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-## Archietecture and WorkFlow
-
 ## Architecture and Workflow
 
 | File Name                  | Core Functionality                                                                                                                                                                                                                                                                                                           | Technical Characteristics                                                                                                                                                                                                                                                                                                                 | Importance and Management                                                                                                                                                                                                                                                                                              |
@@ -361,8 +223,6 @@ Particular attention was given to the protocol’s upgradeability mechanism and 
 The audit also involved a thorough review of the protocol’s test suite. I looked for test coverage completeness, focusing on how well the tests addressed edge cases, potential race conditions, and the integrity of key functionalities like wallet creation, transaction execution, and owner management. Recommendations for additional tests or modifications were made to cover any identified gaps.
 
 In conclusion, the approach taken while auditing the Smart Wallet protocol was thorough and multi-faceted, blending theoretical analysis with practical security assessments. The goal was to ensure the protocol's resilience against attacks, its compliance with Ethereum standards, and its reliability as a secure and user-friendly smart wallet.
-
-
 
 
 
@@ -446,18 +306,20 @@ function entryPointWithdraw(address payable to, uint256 amount) external onlyOwn
 
 
 ## New insights and learning of project from this audit:
-During the audit of the PoolTogether project, several key insights and learning opportunities emerged, highlighting the project's innovative approach to decentralized finance and its integration within the Ethereum ecosystem. The audit provided a deep dive into the mechanics of no-loss prize games, the use of yield-generating strategies, and the complexities of smart contract development and security. Below are some of the primary insights and learnings derived from this audit:
 
-1. **No-Loss Prize Game Mechanics**: The concept of no-loss prize games, where users deposit funds that generate yield in DeFi protocols, with the yield being distributed as prizes, is both innovative and complex. Understanding how PoolTogether manages user deposits, generates yield, and allocates prizes required a comprehensive analysis of the interactions between different smart contracts and external DeFi protocols.
+The audit of the Smart Wallet protocol offered several valuable insights and learnings, emphasizing the protocol's innovative approach to wallet management, security, and interoperability within the Ethereum ecosystem. Here are key takeaways:
 
-2. **Time-Weighted Average Balance (TWAB)**: The use of TWAB for fair and transparent prize distribution is a sophisticated approach to addressing the randomness and fairness in prize allocation. The audit process offered a deeper understanding of how TWAB works, including the mathematical principles underlying its implementation, and its significance in ensuring that the prize allocation process is both random and weighted towards users with longer deposit durations.
+**Embracing ERC-4337 Standards**
 
-3. **Security Implications of External Integrations**: PoolTogether's reliance on external protocols for yield generation and random number generation (RNG) introduces various security considerations. The audit process emphasized the importance of evaluating the security and reliability of these external services, as well as the mechanisms through which PoolTogether interacts with them. This included an assessment of fallback procedures and contingency plans in case of external service failures.
+The protocol's integration with the ERC-4337 standard for smart contract wallets marks a significant step towards achieving user-friendly and secure wallet solutions. This approach not only simplifies user interactions by removing the necessity for gas management but also opens avenues for advanced wallet functionalities like batch transactions and improved security mechanisms. 
 
-4. **Yield Strategies and Financial Risks**: Analyzing the yield strategies employed by PoolTogether, including the integration with various DeFi yield sources, provided valuable insights into the financial risks and rewards associated with such strategies. The audit examined the mechanisms for optimizing yield generation, managing risks, and the potential impact of market volatility on the protocol's financial health.
+**Advanced Security Through WebAuthn**
 
+The utilization of WebAuthn for authentication purposes in `WebAuthn.sol` introduces a level of security typically reserved for traditional web applications into the blockchain domain. This fusion of web standards with blockchain technology not only enhances security but also demonstrates the protocol's commitment to adopting best practices from outside the blockchain world to mitigate common threats such as phishing and key theft.
 
-The audit of PoolTogether not only highlighted the project's innovative contribution to the DeFi space but also provided a comprehensive learning experience on the technical, security, and financial aspects of building and maintaining a decentralized protocol. These insights are valuable for the ongoing development of PoolTogether, as well as for the broader DeFi community and future projects in the space.
+**Upgradeability with User Sovereignty**
+
+The careful implementation of upgradeability in `CoinbaseSmartWallet.sol` through UUPS showcases a thoughtful approach to maintaining and improving smart contract code while preserving user sovereignty. It serves as a learning point on balancing the need for future-proofing contracts with ensuring that upgrades do not compromise decentralized principles or user trust.
 
 
 
@@ -465,9 +327,6 @@ NOTE: I don't track time while auditing or writing report, so what the time I sp
 
 
 
-
-### Time spent:
-4 hours
 
 ### Time spent:
 3 hours
