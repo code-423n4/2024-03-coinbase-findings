@@ -1,0 +1,8 @@
+{
+  "contest": 350,
+  "handle": "bareli",
+  "risk": "2",
+  "title": "no check for  input in 'postOp'",
+  "issueId": 174,
+  "issueUrl": "https://github.com/code-423n4/2024-03-coinbase-findings/issues/174"
+}
