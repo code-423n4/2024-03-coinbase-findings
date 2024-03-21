@@ -1,0 +1,8 @@
+{
+  "contest": 350,
+  "handle": "cryptphi",
+  "risk": "3",
+  "title": "CoinbaseSmartWallet initialize() can be frontrunned to set initial owners due to Access Control issue",
+  "issueId": 149,
+  "issueUrl": "https://github.com/code-423n4/2024-03-coinbase-findings/issues/149"
+}
