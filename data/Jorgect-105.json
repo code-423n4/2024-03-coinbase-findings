@@ -1,0 +1,8 @@
+{
+  "contest": 350,
+  "handle": "Jorgect",
+  "risk": "3",
+  "title": "Users can trick the paymaster to stole gas",
+  "issueId": 105,
+  "issueUrl": "https://github.com/code-423n4/2024-03-coinbase-findings/issues/105"
+}
