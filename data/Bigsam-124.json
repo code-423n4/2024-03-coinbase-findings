@@ -1,0 +1,8 @@
+{
+  "contest": 350,
+  "handle": "Bigsam",
+  "risk": "2",
+  "title": "Lack of proper error handling in Magicspend to handle failures of an external calls.",
+  "issueId": 124,
+  "issueUrl": "https://github.com/code-423n4/2024-03-coinbase-findings/issues/124"
+}
