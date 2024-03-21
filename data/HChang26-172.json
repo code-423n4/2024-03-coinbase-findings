@@ -1,0 +1,8 @@
+{
+  "contest": 350,
+  "handle": "HChang26",
+  "risk": "2",
+  "title": "`withdraw()` Non-ETH token is not supported by bundler + entry point",
+  "issueId": 172,
+  "issueUrl": "https://github.com/code-423n4/2024-03-coinbase-findings/issues/172"
+}
