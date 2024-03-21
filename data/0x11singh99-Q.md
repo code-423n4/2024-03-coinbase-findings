@@ -36,7 +36,7 @@ File : src/SmartWallet/CoinbaseSmartWallet.sol
 [91-100](https://github.com/code-423n4/2024-03-coinbase/blob/main/src/SmartWallet/CoinbaseSmartWallet.sol#L91C1-L100C6)
 
 ## [L-03] `initialize` function missing `initializer` `modifier`
-
+`initilaizer` modifier ensures that `initialize` function should be called only once. If it is not present than this function can be called multiple times which is bad since this function is made like constructor for proxy. So better use `initializer` modifier on this function.
 ```solidity
 File : src/SmartWallet/CoinbaseSmartWallet.sol
 
