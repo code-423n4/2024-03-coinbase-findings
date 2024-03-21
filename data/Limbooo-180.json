@@ -1,0 +1,8 @@
+{
+  "contest": 350,
+  "handle": "Limbooo",
+  "risk": "2",
+  "title": "MultiOwnable Flaw Enables Persistent Owner Exploit",
+  "issueId": 180,
+  "issueUrl": "https://github.com/code-423n4/2024-03-coinbase-findings/issues/180"
+}
