@@ -1,0 +1,8 @@
+{
+  "contest": 350,
+  "handle": "imare",
+  "risk": "2",
+  "title": "wrong check for ETH balance is done inside the MagicSpend#validatePaymasterUserOp which can lead to reverts inside MagicSpend#postOp",
+  "issueId": 133,
+  "issueUrl": "https://github.com/code-423n4/2024-03-coinbase-findings/issues/133"
+}
